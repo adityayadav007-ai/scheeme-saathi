@@ -14,6 +14,8 @@ const allowedOrigins = (process.env.CLIENT_ORIGIN || "")
   .map((origin) => origin.trim().replace(/\/+$/, ""))
   .filter(Boolean);
 const developmentOriginPattern = /^http:\/\/(?:localhost|127\.0\.0\.1):\d+$/;
+const vercelProjectOriginPattern =
+  /^https:\/\/scheeme-saathi[a-z0-9-]*\.vercel\.app$/;
 
 export function createCorsOriginCallback({
   origins = allowedOrigins,
@@ -34,6 +36,7 @@ export function createCorsOriginCallback({
     const normalizedOrigin = origin.trim().replace(/\/+$/, "");
     if (
       normalizedOrigins.has(normalizedOrigin) ||
+      vercelProjectOriginPattern.test(normalizedOrigin) ||
       (!production && developmentOriginPattern.test(normalizedOrigin))
     ) {
       callback(null, true);

@@ -46,14 +46,55 @@ describe("scheme API", () => {
 
     return Promise.all([
       checkOrigin("https://client.example"),
+      checkOrigin(
+        "https://scheeme-saathi-a1-aditya-yadavs-projects-56c70efa.vercel.app"
+      ),
+      checkOrigin("https://another-project.vercel.app"),
+      checkOrigin("https://scheeme-saathi.vercel.app.evil.example"),
       checkOrigin("http://localhost:5176"),
       checkOrigin(undefined)
-    ]).then(([configured, local, noOrigin]) => {
+    ]).then(([configured, preview, unrelated, deceptive, local, noOrigin]) => {
       expect(configured).toBe(true);
+      expect(preview).toBe(true);
+      expect(unrelated).toBe(false);
+      expect(deceptive).toBe(false);
       expect(local).toBe(false);
       expect(noOrigin).toBe(true);
       expect(logBlockedOrigin).toHaveBeenCalledWith("http://localhost:5176");
+      expect(logBlockedOrigin).toHaveBeenCalledWith(
+        "https://another-project.vercel.app"
+      );
+      expect(logBlockedOrigin).toHaveBeenCalledWith(
+        "https://scheeme-saathi.vercel.app.evil.example"
+      );
     });
+  });
+
+  test("returns CORS headers for project-scoped Vercel preview deployments", async () => {
+    const origin =
+      "https://scheeme-saathi-a1-aditya-yadavs-projects-56c70efa.vercel.app";
+    const response = await request(app)
+      .get("/api/health")
+      .set("Origin", origin);
+
+    expect(response.status).toBe(200);
+    expect(response.headers["access-control-allow-origin"]).toBe(origin);
+  });
+
+  test("does not grant CORS access to other Vercel projects", async () => {
+    const origin = "https://another-project.vercel.app";
+    const blockedLog = vi
+      .spyOn(console, "warn")
+      .mockImplementation(() => {});
+    const response = await request(app)
+      .get("/api/health")
+      .set("Origin", origin);
+
+    expect(response.status).toBe(200);
+    expect(response.headers["access-control-allow-origin"]).toBeUndefined();
+    expect(blockedLog).toHaveBeenCalledWith(
+      `Blocked CORS request from origin: ${origin}`
+    );
   });
 
   test("adds CORS headers to API validation errors", async () => {

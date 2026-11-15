@@ -78,13 +78,16 @@ Network fetch errors are retried with exponential backoff. Set
 
 All API validation and server errors use a JSON `error` object. The API limits
 requests to 100 per 15 minutes per IP and restricts browser CORS to
-`CLIENT_ORIGIN`. Set it to a comma-separated list of allowed origins, for
-example `http://localhost:5173,https://your-site.example`; spaces and trailing
-slashes are ignored. Outside production, any `http://localhost:<port>` or
+`CLIENT_ORIGIN` plus Scheme Saathi's Vercel deployment URLs. Set
+`CLIENT_ORIGIN` to a comma-separated list of exact allowed origins, for example
+`http://localhost:5173,https://your-site.example`; spaces and trailing slashes
+are ignored. Outside production, any `http://localhost:<port>` or
 `http://127.0.0.1:<port>` origin is also allowed, so Vite's changing dev port
-does not block API requests. In production, only the configured origins are
-allowed. Requests without an `Origin` header (such as curl and health checks)
-are allowed.
+does not block API requests. In production, exact configured origins and
+origins matching
+`^https://scheeme-saathi[a-z0-9-]*\.vercel\.app$` are allowed; unrelated
+`*.vercel.app` projects are not. Requests without an `Origin` header (such as
+curl and health checks) are allowed.
 
 Vite uses port 5173 with strict port checking. If that port is occupied, stop
 the other process rather than relying on Vite to silently select another port.
@@ -138,7 +141,11 @@ The test command runs the server suite (matching, parsing, link checks, and
 Supertest API coverage) followed by the client suite (wizard, language toggle,
 and page metadata). The audit gate fails on high or critical findings; review
 the reported moderate findings as well. `VITE_API_URL` is embedded during the
-client build; set it in the hosting provider before building.
+client build; set it in the hosting provider before building. Set the value to
+the API server host, with or without a trailing `/api` (for example,
+`https://your-api.example` or `https://your-api.example/api`); the client trims
+the value and normalizes it to exactly one `/api` suffix. In development, an
+empty value defaults to `http://127.0.0.1:5000`.
 
 ### MongoDB Atlas
 
@@ -179,8 +186,10 @@ NODE_ENV=production
 Set `ENABLE_CRON=true` only if the service will remain available to execute
 scheduled jobs. A sleeping free-tier service may miss cron schedules.
 `HF_DATASET_PATH` is optional and only needed when a dataset file is available
-on the server's filesystem. CORS allows the exact origin in `CLIENT_ORIGIN`;
-update it if the client domain changes.
+on the server's filesystem. CORS allows exact origins listed in `CLIENT_ORIGIN`
+and Scheme Saathi Vercel preview URLs matching
+`https://scheeme-saathi[a-z0-9-]*.vercel.app`; it does not allow every Vercel
+site.
 
 ### Deploy the client to Vercel
 
@@ -189,9 +198,12 @@ Import the same repository as a separate Vercel project:
 - **Root directory:** `client`
 - **Build command:** `npm run build`
 - **Output directory:** `dist`
-- **Environment variable:** `VITE_API_URL=<deployed API base URL ending in /api>`
+- **Environment variable:** `VITE_API_URL=<deployed API server host, with or without /api>`
 
-Set `VITE_API_URL` for the production environment before triggering the build.
+Set `VITE_API_URL` to the Render API host, either with or without `/api`, for
+the production environment before triggering the build. The client adds one
+`/api` suffix, so it will call `/api/schemes`, `/api/schemes/:slug`, and
+`/api/match` without duplicating the prefix.
 The `client/vercel.json` rewrite supports direct refreshes on React Router
 routes. For Netlify, deploy `client/dist`; `client/public/_redirects` supplies
 the equivalent single-page-app fallback.
@@ -224,8 +236,9 @@ the production `MONGO_URI` available to the service.
 - Keep `.env` files, API keys, and database credentials out of Git and images;
   use the hosting providers' secret environment settings.
 - Use a least-privilege database user and restrict Atlas network access.
-- Set `CLIENT_ORIGIN` to the exact production client origin; do not use a
-  wildcard CORS origin.
+- Set `CLIENT_ORIGIN` to exact production client origins; the API additionally
+  permits only Scheme Saathi Vercel URLs matching the project-specific pattern.
+  Do not use a wildcard CORS origin.
 - Keep Helmet and API rate limiting enabled. Avoid logging `/api/match`
   requests or their answers.
 - Eligibility answers stay in the user's browser session and are not stored

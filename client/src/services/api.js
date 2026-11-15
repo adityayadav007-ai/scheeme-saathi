@@ -1,7 +1,17 @@
 import axios from "axios";
+import { normalizeApiBaseUrl } from "./apiBaseUrl.js";
+
+const baseURL = normalizeApiBaseUrl(
+  import.meta.env.VITE_API_URL,
+  import.meta.env.DEV
+);
+
+if (!import.meta.env.PROD) {
+  console.info("Scheme Saathi API baseURL:", baseURL);
+}
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+  baseURL,
   timeout: 12_000,
   headers: { "Content-Type": "application/json" }
 });
