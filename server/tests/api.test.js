@@ -138,6 +138,21 @@ describe("scheme API", () => {
     });
   });
 
+  test("returns pagination metadata when no schemes are found", async () => {
+    vi.spyOn(Scheme, "find").mockReturnValue(queryChain([]));
+    vi.spyOn(Scheme, "countDocuments").mockResolvedValue(0);
+
+    const response = await request(app)
+      .get("/api/schemes")
+      .query({ page: "1", limit: "12" });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      data: [],
+      pagination: { page: 1, limit: 12, total: 0, totalPages: 0 }
+    });
+  });
+
   test("escapes search text and rejects invalid list parameters", async () => {
     const find = vi.spyOn(Scheme, "find").mockReturnValue(queryChain([]));
     vi.spyOn(Scheme, "countDocuments").mockResolvedValue(0);

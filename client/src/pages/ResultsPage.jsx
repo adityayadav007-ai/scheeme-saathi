@@ -64,8 +64,8 @@ export default function ResultsPage() {
   });
 
   const filtered = useMemo(() => {
-    const filterList = (schemes = []) =>
-      schemes.filter((scheme) => {
+    const filterList = (value) =>
+      (Array.isArray(value) ? value : []).filter((scheme) => {
         const searchMatches = `${scheme.name ?? ""} ${scheme.description ?? ""} ${scheme.ministry ?? ""}`
           .toLowerCase()
           .includes(search.trim().toLowerCase());

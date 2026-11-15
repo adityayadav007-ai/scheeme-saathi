@@ -19,7 +19,8 @@ export default function BrowseSchemesPage() {
     limit: 12
   };
   const query = useSchemes(params);
-  const totalPages = Math.max(query.data?.pagination.totalPages ?? 1, 1);
+  const schemes = Array.isArray(query.data?.data) ? query.data.data : [];
+  const totalPages = Math.max(query.data?.pagination?.totalPages ?? 1, 1);
 
   function updateSearch(value) {
     setSearch(value);
@@ -88,7 +89,7 @@ export default function BrowseSchemesPage() {
             onRetry={() => query.refetch()}
           />
         </div>
-      ) : query.data.data.length === 0 ? (
+      ) : schemes.length === 0 ? (
         <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
           <h2 className="text-xl font-bold">{t("browse.emptyTitle")}</h2>
           <p className="mt-2 text-slate-600">{t("browse.emptyText")}</p>
@@ -96,7 +97,7 @@ export default function BrowseSchemesPage() {
       ) : (
         <>
           <div className="mt-8 grid gap-4 lg:grid-cols-2">
-            {query.data.data.map((scheme) => (
+            {schemes.map((scheme) => (
               <SchemeCard key={scheme.slug} scheme={scheme} />
             ))}
           </div>
