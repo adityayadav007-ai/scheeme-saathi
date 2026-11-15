@@ -1,0 +1,559 @@
+{
+  "brand": "Scheme Saathi",
+  "accessibility": {
+    "mainNavigation": "Main navigation",
+    "loadingSchemes": "Loading schemes",
+    "schemePagination": "Scheme pages",
+    "languageToggle": "Choose language",
+    "opensNewTab": " (opens in a new tab)"
+  },
+  "language": {
+    "english": "English",
+    "hindi": "हिंदी"
+  },
+  "nav": {
+    "home": "Home",
+    "browse": "Browse schemes",
+    "browseShort": "Browse",
+    "check": "Check eligibility",
+    "checkShort": "Check"
+  },
+  "disclaimer": "Scheme Saathi is an informational tool and is not affiliated with any government department. Information may be outdated. Final eligibility is decided by the concerned department.",
+  "home": {
+    "eyebrow": "A clearer path to public support",
+    "title": "Find government schemes that fit your life.",
+    "intro": "Answer a few simple questions to explore Indian government schemes that may be relevant to you. Your answers stay in this browser session.",
+    "check": "Check eligibility",
+    "browse": "Browse all schemes",
+    "trustTitle": "A helpful starting point, not a final decision",
+    "trustText": "Scheme Saathi helps you discover programs and their official websites. Always confirm current rules with the concerned department.",
+    "steps": [
+      {
+        "title": "Discover",
+        "text": "Explore a central directory of government schemes."
+      },
+      {
+        "title": "Understand",
+        "text": "See which criteria matched and what you should check."
+      },
+      {
+        "title": "Verify",
+        "text": "Continue to the official website for current rules."
+      }
+    ]
+  },
+  "wizard": {
+    "title": "Check your eligibility",
+    "intro": "Answer a few questions to find schemes worth exploring. You can skip personal questions you prefer not to answer.",
+    "step": "Step",
+    "of": "of",
+    "progress": "Eligibility questionnaire progress",
+    "progressValue": "Step {{current}} of {{total}}",
+    "back": "Back",
+    "next": "Next",
+    "find": "Find schemes",
+    "finding": "Finding schemes…",
+    "startOver": "Start over",
+    "homeLink": "Home",
+    "required": "Please answer this question to continue.",
+    "invalidAge": "Enter an age from 0 to 120.",
+    "invalidIncome": "Choose an annual family income range.",
+    "privacy": "Your answers are kept only in this browser session and are not saved to Scheme Saathi.",
+    "conservativeIncome": "For income-based checks, the top of your selected range is used. This avoids overstating eligibility.",
+    "ageHint": "Age 0 to 120"
+  },
+  "questions": {
+    "age": "How old are you?",
+    "gender": "How do you describe your gender?",
+    "state": "Which state or union territory do you live in?",
+    "area": "Do you live in a rural or urban area?",
+    "income": "What is your annual family income range?",
+    "category": "Which social category applies to you?",
+    "occupation": "What best describes your occupation?",
+    "education": "What is your highest education level?",
+    "disability": "Do you have a disability?",
+    "maritalStatus": "What is your marital status?",
+    "ownsLand": "Do you or your household own agricultural land?",
+    "bpl": "Does your household have a BPL card?"
+  },
+  "choices": {
+    "select": "Choose an option",
+    "preferNot": "Prefer not to say",
+    "gender": [
+      {
+        "value": "female",
+        "label": "Female"
+      },
+      {
+        "value": "male",
+        "label": "Male"
+      },
+      {
+        "value": "other",
+        "label": "Another identity"
+      }
+    ],
+    "area": [
+      {
+        "value": "Rural",
+        "label": "Rural"
+      },
+      {
+        "value": "Urban",
+        "label": "Urban"
+      }
+    ],
+    "income": [
+      {
+        "value": "100000",
+        "label": "Up to ₹1 lakh"
+      },
+      {
+        "value": "200000",
+        "label": "₹1 lakh to ₹2 lakh"
+      },
+      {
+        "value": "500000",
+        "label": "₹2 lakh to ₹5 lakh"
+      },
+      {
+        "value": "1000000",
+        "label": "₹5 lakh to ₹10 lakh"
+      },
+      {
+        "value": "9007199254740991",
+        "label": "Above ₹10 lakh"
+      }
+    ],
+    "category": [
+      {
+        "value": "General",
+        "label": "General"
+      },
+      {
+        "value": "OBC",
+        "label": "OBC"
+      },
+      {
+        "value": "SC",
+        "label": "SC"
+      },
+      {
+        "value": "ST",
+        "label": "ST"
+      },
+      {
+        "value": "EWS",
+        "label": "EWS"
+      }
+    ],
+    "occupation": [
+      {
+        "value": "farmer",
+        "label": "Farmer"
+      },
+      {
+        "value": "street vendor",
+        "label": "Street vendor"
+      },
+      {
+        "value": "artisan",
+        "label": "Artisan or craftsperson"
+      },
+      {
+        "value": "student",
+        "label": "Student"
+      },
+      {
+        "value": "fisher",
+        "label": "Fisher"
+      },
+      {
+        "value": "construction worker",
+        "label": "Construction worker"
+      },
+      {
+        "value": "self-employed",
+        "label": "Self-employed"
+      },
+      {
+        "value": "unorganised worker",
+        "label": "Unorganised worker"
+      },
+      {
+        "value": "salaried",
+        "label": "Salaried"
+      },
+      {
+        "value": "unemployed",
+        "label": "Unemployed"
+      },
+      {
+        "value": "other",
+        "label": "Other"
+      }
+    ],
+    "education": [
+      {
+        "value": "no formal education",
+        "label": "No formal education"
+      },
+      {
+        "value": "primary",
+        "label": "Primary"
+      },
+      {
+        "value": "secondary",
+        "label": "Secondary"
+      },
+      {
+        "value": "higher secondary",
+        "label": "Higher secondary"
+      },
+      {
+        "value": "graduate",
+        "label": "Graduate"
+      },
+      {
+        "value": "postgraduate",
+        "label": "Postgraduate"
+      },
+      {
+        "value": "professional",
+        "label": "Professional qualification"
+      }
+    ],
+    "maritalStatus": [
+      {
+        "value": "unmarried",
+        "label": "Unmarried"
+      },
+      {
+        "value": "married",
+        "label": "Married"
+      },
+      {
+        "value": "widowed",
+        "label": "Widowed"
+      },
+      {
+        "value": "divorced",
+        "label": "Divorced"
+      },
+      {
+        "value": "separated",
+        "label": "Separated"
+      }
+    ],
+    "yesNo": [
+      {
+        "value": "true",
+        "label": "Yes"
+      },
+      {
+        "value": "false",
+        "label": "No"
+      }
+    ]
+  },
+  "categories": [
+    {
+      "value": "Agriculture",
+      "label": "Agriculture"
+    },
+    {
+      "value": "Health",
+      "label": "Health"
+    },
+    {
+      "value": "Education",
+      "label": "Education"
+    },
+    {
+      "value": "Housing",
+      "label": "Housing"
+    },
+    {
+      "value": "Employment",
+      "label": "Employment"
+    },
+    {
+      "value": "Women",
+      "label": "Women"
+    },
+    {
+      "value": "Senior Citizens",
+      "label": "Senior Citizens"
+    },
+    {
+      "value": "Business",
+      "label": "Business"
+    },
+    {
+      "value": "Other",
+      "label": "Other"
+    }
+  ],
+  "states": [
+    {
+      "value": "Andhra Pradesh",
+      "label": "Andhra Pradesh"
+    },
+    {
+      "value": "Arunachal Pradesh",
+      "label": "Arunachal Pradesh"
+    },
+    {
+      "value": "Assam",
+      "label": "Assam"
+    },
+    {
+      "value": "Bihar",
+      "label": "Bihar"
+    },
+    {
+      "value": "Chhattisgarh",
+      "label": "Chhattisgarh"
+    },
+    {
+      "value": "Goa",
+      "label": "Goa"
+    },
+    {
+      "value": "Gujarat",
+      "label": "Gujarat"
+    },
+    {
+      "value": "Haryana",
+      "label": "Haryana"
+    },
+    {
+      "value": "Himachal Pradesh",
+      "label": "Himachal Pradesh"
+    },
+    {
+      "value": "Jharkhand",
+      "label": "Jharkhand"
+    },
+    {
+      "value": "Karnataka",
+      "label": "Karnataka"
+    },
+    {
+      "value": "Kerala",
+      "label": "Kerala"
+    },
+    {
+      "value": "Madhya Pradesh",
+      "label": "Madhya Pradesh"
+    },
+    {
+      "value": "Maharashtra",
+      "label": "Maharashtra"
+    },
+    {
+      "value": "Manipur",
+      "label": "Manipur"
+    },
+    {
+      "value": "Meghalaya",
+      "label": "Meghalaya"
+    },
+    {
+      "value": "Mizoram",
+      "label": "Mizoram"
+    },
+    {
+      "value": "Nagaland",
+      "label": "Nagaland"
+    },
+    {
+      "value": "Odisha",
+      "label": "Odisha"
+    },
+    {
+      "value": "Punjab",
+      "label": "Punjab"
+    },
+    {
+      "value": "Rajasthan",
+      "label": "Rajasthan"
+    },
+    {
+      "value": "Sikkim",
+      "label": "Sikkim"
+    },
+    {
+      "value": "Tamil Nadu",
+      "label": "Tamil Nadu"
+    },
+    {
+      "value": "Telangana",
+      "label": "Telangana"
+    },
+    {
+      "value": "Tripura",
+      "label": "Tripura"
+    },
+    {
+      "value": "Uttar Pradesh",
+      "label": "Uttar Pradesh"
+    },
+    {
+      "value": "Uttarakhand",
+      "label": "Uttarakhand"
+    },
+    {
+      "value": "West Bengal",
+      "label": "West Bengal"
+    },
+    {
+      "value": "Andaman and Nicobar Islands",
+      "label": "Andaman and Nicobar Islands"
+    },
+    {
+      "value": "Chandigarh",
+      "label": "Chandigarh"
+    },
+    {
+      "value": "Dadra and Nagar Haveli and Daman and Diu",
+      "label": "Dadra and Nagar Haveli and Daman and Diu"
+    },
+    {
+      "value": "Delhi",
+      "label": "Delhi"
+    },
+    {
+      "value": "Jammu and Kashmir",
+      "label": "Jammu and Kashmir"
+    },
+    {
+      "value": "Ladakh",
+      "label": "Ladakh"
+    },
+    {
+      "value": "Lakshadweep",
+      "label": "Lakshadweep"
+    },
+    {
+      "value": "Puducherry",
+      "label": "Puducherry"
+    }
+  ],
+  "results": {
+    "title": "Your scheme matches",
+    "intro": "Use these results as a starting point. Confirm every requirement on the official scheme website.",
+    "eligible": "Schemes you are eligible for",
+    "partial": "You may also qualify (please check these)",
+    "search": "Search your results",
+    "category": "Filter by category",
+    "allCategories": "All categories",
+    "edit": "Edit answers",
+    "startOver": "Start over",
+    "emptyTitle": "No schemes match these filters",
+    "emptyText": "Try a different search or category, or explore schemes on the Government of India portal.",
+    "browseGovernment": "Visit myscheme.gov.in",
+    "noEligible": "No verified matches yet. Review the schemes below and confirm details with the department.",
+    "retry": "Try again",
+    "answerRequired": "Your answers are not available in this browser session. Please answer the questions first.",
+    "matchedOnLabel": "Matched on:",
+    "pleaseCheckLabel": "Please check:"
+  },
+  "criteria": {
+    "age": "Age",
+    "gender": "Gender",
+    "category": "Category",
+    "occupation": "Occupation",
+    "area": "Area",
+    "income": "Income",
+    "landOwnership": "Land ownership",
+    "bplStatus": "BPL status",
+    "disabilityStatus": "Disability status"
+  },
+  "matchReasons": {
+    "needsConfirmation": "Eligibility needs to be confirmed on the official website",
+    "ageMissing": "Age is required to confirm eligibility",
+    "genderMissing": "Gender is required to confirm eligibility",
+    "categoryMissing": "Category is required to confirm eligibility",
+    "occupationMissing": "Occupation is required to confirm eligibility",
+    "areaMissing": "Area is required to confirm eligibility",
+    "incomeMissing": "Income is required to confirm eligibility",
+    "landMissing": "Land ownership is required to confirm eligibility",
+    "bplMissing": "BPL status is required to confirm eligibility",
+    "disabilityMissing": "Disability status is required to confirm eligibility",
+    "ageFailed": "Age does not meet the limit",
+    "genderFailed": "Gender does not match",
+    "categoryFailed": "Category does not match",
+    "occupationFailed": "Occupation does not match",
+    "areaFailed": "Area does not match",
+    "incomeFailed": "Income is above the limit",
+    "landFailed": "Land ownership does not match",
+    "bplFailed": "BPL status does not match",
+    "disabilityFailed": "Disability status does not match"
+  },
+  "browse": {
+    "title": "Browse government schemes",
+    "intro": "Search the available scheme directory and check each official website for current details.",
+    "search": "Search by scheme name or description",
+    "category": "Category",
+    "allCategories": "All categories",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of",
+    "emptyTitle": "No schemes found",
+    "emptyText": "Try another search or category."
+  },
+  "scheme": {
+    "official": "Official website",
+    "source": "Source",
+    "sourceUnavailable": "Source link unavailable",
+    "lastUpdated": "Last updated",
+    "dateUnavailable": "Date unavailable",
+    "verified": "Verified",
+    "unverified": "Unverified data",
+    "linkUnderReview": "Link under review",
+    "linkMayNotWork": "This link may not work. Confirm the current official address before continuing.",
+    "warning": "Information may be outdated. Confirm the latest details on the official website before applying.",
+    "ministry": "Ministry",
+    "benefits": "Key benefits",
+    "eligibility": "Eligibility",
+    "documents": "Documents required",
+    "howToApply": "How to apply",
+    "moreDocuments": "+{{count}} more",
+    "backToBrowse": "Back to schemes",
+    "notFound": "We couldn't find that scheme."
+  },
+  "errors": {
+    "generic": "Something went wrong while loading this information.",
+    "loadSchemes": "We couldn't load the schemes. Check your connection and retry.",
+    "submit": "We couldn't check your answers. Please try again."
+  },
+  "notFound": {
+    "title": "This page isn't here",
+    "text": "The page may have moved, or the address may be incorrect.",
+    "home": "Return home",
+    "browse": "Browse schemes",
+    "code": "404"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "text": "The page hit an unexpected error. Try reloading, or return to the home page.",
+    "reload": "Reload page",
+    "home": "Go to home"
+  },
+  "seo": {
+    "homeTitle": "Scheme Saathi | Find government schemes",
+    "homeDescription": "Discover Indian government schemes that may fit your circumstances and visit official sources to confirm details.",
+    "checkTitle": "Check eligibility | Scheme Saathi",
+    "checkDescription": "Answer a few questions to find Indian government schemes that may be relevant to you. Your answers stay in this browser session.",
+    "resultsTitle": "Your scheme matches | Scheme Saathi",
+    "resultsDescription": "Review schemes that may fit your answers and confirm current eligibility on official websites.",
+    "browseTitle": "Browse government schemes | Scheme Saathi",
+    "browseDescription": "Search and filter the Scheme Saathi directory of Indian government schemes.",
+    "schemeTitle": "{{name}} | Scheme Saathi",
+    "schemeDescription": "Read details about {{name}} and visit its official government website.",
+    "notFoundTitle": "Page not found | Scheme Saathi",
+    "notFoundDescription": "The requested Scheme Saathi page could not be found."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "scheme-saathi",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "test:server": "npm --prefix server test",
+    "test:client": "npm --prefix client test",
+    "test:all": "npm run test:server && npm run test:client",
+    "audit": "npm audit --prefix server --audit-level=high && npm audit --prefix client --audit-level=high"
+  }
+}
