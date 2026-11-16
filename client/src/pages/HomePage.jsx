@@ -1,9 +1,20 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import LoadingSkeleton from "../components/LoadingSkeleton.jsx";
 import PageMeta from "../components/PageMeta.jsx";
+import RequestError from "../components/RequestError.jsx";
+import SchemeCard from "../components/SchemeCard.jsx";
+import { useSchemes } from "../hooks/useSchemes.js";
 
 export default function HomePage() {
   const { t } = useTranslation();
+  const popularQuery = useSchemes(
+    { page: 1, limit: 6 },
+    { staleTime: 5 * 60 * 1000 }
+  );
+  const popularSchemes = Array.isArray(popularQuery.data?.data)
+    ? popularQuery.data.data.slice(0, 6)
+    : [];
 
   return (
     <div>
@@ -71,6 +82,56 @@ export default function HomePage() {
             </div>
           ))}
         </div>
+      </section>
+      <section
+        aria-labelledby="popular-schemes-heading"
+        className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8"
+      >
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <h2
+              id="popular-schemes-heading"
+              className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl"
+            >
+              {t("home.popularTitle")}
+            </h2>
+            <p className="mt-2 max-w-2xl leading-6 text-slate-600">
+              {t("home.popularIntro")}
+            </p>
+          </div>
+          <Link
+            to="/schemes"
+            className="inline-flex min-h-11 items-center justify-center self-start rounded-xl border border-teal-800 px-5 text-sm font-bold text-teal-900 hover:bg-teal-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 sm:self-auto"
+          >
+            {t("home.browse")}
+          </Link>
+        </div>
+
+        {popularQuery.isLoading || (!popularQuery.data && !popularQuery.isError) ? (
+          <div className="mt-6">
+            <LoadingSkeleton count={6} grid />
+          </div>
+        ) : popularQuery.isError ? (
+          <div className="mt-6">
+            <RequestError
+              message={t("errors.loadSchemes")}
+              onRetry={() => popularQuery.refetch()}
+            />
+          </div>
+        ) : popularSchemes.length > 0 ? (
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {popularSchemes.map((scheme, index) => (
+              <SchemeCard
+                key={scheme?.slug || `${scheme?.name || "scheme"}-${index}`}
+                scheme={scheme}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white p-5 text-slate-700">
+            {t("home.noPopular")}
+          </p>
+        )}
       </section>
     </div>
   );

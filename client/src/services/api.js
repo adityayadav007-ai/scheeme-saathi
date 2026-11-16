@@ -16,17 +16,50 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" }
 });
 
+const defaultPagination = {
+  page: 1,
+  limit: 12,
+  total: 0,
+  totalPages: 1
+};
+
+function safeNumber(value, fallback) {
+  if (value === null || value === undefined || value === "") return fallback;
+  const number = Number(value);
+  return Number.isSafeInteger(number) ? number : fallback;
+}
+
 export async function getSchemes(params = {}) {
-  const { data } = await api.get("/schemes", { params });
-  return data;
+  const response = await api.get("/schemes", { params });
+  const payload = response?.data;
+  const pagination = payload?.pagination;
+
+  return {
+    ...(payload && typeof payload === "object" ? payload : {}),
+    data: Array.isArray(payload?.data) ? payload.data : [],
+    pagination: {
+      page: safeNumber(pagination?.page, defaultPagination.page),
+      limit: safeNumber(pagination?.limit, defaultPagination.limit),
+      total: safeNumber(pagination?.total, defaultPagination.total),
+      totalPages: safeNumber(
+        pagination?.totalPages,
+        defaultPagination.totalPages
+      )
+    }
+  };
 }
 
 export async function getScheme(slug) {
-  const { data } = await api.get(`/schemes/${encodeURIComponent(slug)}`);
-  return data.data;
+  const response = await api.get(`/schemes/${encodeURIComponent(slug)}`);
+  return response?.data?.data ?? null;
 }
 
 export async function matchSchemes(answers) {
-  const { data } = await api.post("/match", answers);
-  return data;
+  const response = await api.post("/match", answers);
+  const payload = response?.data;
+  return {
+    ...(payload && typeof payload === "object" ? payload : {}),
+    eligible: Array.isArray(payload?.eligible) ? payload.eligible : [],
+    partial: Array.isArray(payload?.partial) ? payload.partial : []
+  };
 }

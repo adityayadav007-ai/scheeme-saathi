@@ -1,6 +1,6 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { HelmetProvider } from "react-helmet-async";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import "../i18n/index.js";
 import BrowseSchemesPage from "./BrowseSchemesPage.jsx";
@@ -22,11 +22,17 @@ const scheme = {
   lastSyncedAt: null
 };
 
-function renderBrowsePage() {
+function CurrentSearch() {
+  const location = useLocation();
+  return <output data-testid="current-search">{location.search}</output>;
+}
+
+function renderBrowsePage(initialEntry = "/schemes") {
   return render(
     <HelmetProvider>
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[initialEntry]}>
         <BrowseSchemesPage />
+        <CurrentSearch />
       </MemoryRouter>
     </HelmetProvider>
   );
@@ -45,6 +51,7 @@ function loadedQuery(data) {
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
+  vi.useRealTimers();
 });
 
 describe("browse schemes response handling", () => {
@@ -58,7 +65,12 @@ describe("browse schemes response handling", () => {
 
     renderBrowsePage();
 
-    expect(screen.getByText("No schemes found yet")).toBeTruthy();
+    expect(screen.getByText("No schemes found")).toBeTruthy();
+    expect(screen.getByText("Showing 0 of 0 schemes")).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Check eligibility" })).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: /myScheme\.gov\.in/ })
+    ).toBeTruthy();
   });
 
   test("shows the empty state when the response has no data array", () => {
@@ -66,16 +78,17 @@ describe("browse schemes response handling", () => {
 
     renderBrowsePage();
 
-    expect(screen.getByText("No schemes found yet")).toBeTruthy();
+    expect(screen.getByText("No schemes found")).toBeTruthy();
   });
 
-  test("uses a safe one-page fallback when pagination is missing", () => {
+  test("does not render pagination when the pagination object is missing", () => {
     useSchemesMock.mockReturnValue(loadedQuery({ data: [scheme] }));
 
     renderBrowsePage();
 
     expect(screen.getByRole("link", { name: "Example scheme" })).toBeTruthy();
-    expect(screen.getByText("Page 1 of 1")).toBeTruthy();
+    expect(screen.queryByRole("navigation", { name: "Scheme pages" })).toBeNull();
+    expect(screen.getByText("Showing 1 of 0 schemes")).toBeTruthy();
   });
 
   test("renders schemes and pagination from a normal API response", () => {
@@ -89,6 +102,29 @@ describe("browse schemes response handling", () => {
     renderBrowsePage();
 
     expect(screen.getByRole("link", { name: "Example scheme" })).toBeTruthy();
-    expect(screen.getByText("Page 1 of 3")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Go to page 1" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Go to page 3" })).toBeTruthy();
+    expect(screen.getByText("Showing 1 of 25 schemes")).toBeTruthy();
+  });
+
+  test("debounces search and updates the URL while resetting the page", async () => {
+    vi.useFakeTimers();
+    useSchemesMock.mockReturnValue(
+      loadedQuery({
+        data: [],
+        pagination: { page: 1, limit: 12, total: 0, totalPages: 0 }
+      })
+    );
+
+    renderBrowsePage("/schemes?page=2");
+    fireEvent.change(screen.getByRole("searchbox"), {
+      target: { value: " farmer " }
+    });
+
+    await act(async () => {
+      vi.advanceTimersByTime(300);
+    });
+
+    expect(screen.getByTestId("current-search").textContent).toBe("?q=farmer");
   });
 });

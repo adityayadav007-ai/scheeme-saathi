@@ -9,6 +9,8 @@
     "db:check": "node scripts/dbCheck.js",
     "seed": "node scripts/seed.js",
     "sync": "node scripts/sync.js",
+    "import:schemes": "node scripts/importSchemes.js",
+    "import:schemes:prod": "node scripts/importSchemes.js --prod",
     "check-links": "node scripts/checkLinks.js",
     "review:list": "node scripts/reviewList.js",
     "review:approve": "node scripts/reviewApprove.js",

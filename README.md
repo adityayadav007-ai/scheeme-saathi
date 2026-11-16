@@ -66,6 +66,46 @@ Network fetch errors are retried with exponential backoff. Set
 `ENABLE_CRON=true` to schedule daily sync at 2:00 AM and weekly link checks at
 3:00 AM Sunday (India time); cron is disabled by default.
 
+### Bulk import schemes from CSV
+
+From the `server` directory, validate a UTF-8 CSV without writing any records:
+
+```sh
+npm run import:schemes -- ./data/import/schemes.csv --dry-run
+```
+
+Run the local import with `MONGO_URI`:
+
+```sh
+npm run import:schemes -- ./data/import/schemes.csv
+```
+
+The CSV header must exactly match this order:
+
+```text
+name,ministry,level,state,category,description,benefits,eligibilityText,minAge,maxAge,gender,category_eligible,occupation,maxIncome,area,requiresLand,requiresBPL,documents,howToApply,officialLink,sourceUrl,keywords
+```
+
+Multi-value cells use semicolons. Each imported row must have a unique
+name-derived slug, a supported category and level, and an HTTPS official link
+on a `.gov.in` or `.nic.in` domain. Invalid rows and duplicates are reported
+with row numbers; only the first row for a duplicate slug is kept. Imports are
+marked `dataSource=import`, unverified, and in need of review by default. Pass
+`--verified` only after manually confirming the data. Existing verified
+schemes are skipped unless `--overwrite` is passed.
+
+For Atlas, set `MONGO_URI_PROD` in the private server environment and use the
+production command. It asks for an explicit `yes` before connecting unless
+`--yes` is passed:
+
+```sh
+npm run import:schemes:prod -- ./data/import/schemes.csv --dry-run
+npm run import:schemes:prod -- ./data/import/schemes.csv --yes
+```
+
+Add `--verified` or `--overwrite` only when appropriate. The importer prints
+only the database host and name before connecting, never the connection URI.
+
 ## Scheme API
 
 - `GET /api/schemes?q=farmer&category=Agriculture&state=Maharashtra&level=Central&page=1&limit=12`
@@ -107,8 +147,11 @@ curl -X POST "http://localhost:5000/api/match" -H "Content-Type: application/jso
 
 Start the client with `cd client && npm run dev`. The home page links to the
 eligibility wizard and scheme directory. Wizard answers are held in React state
-and `sessionStorage` only; use **Start over** to clear them. Run the wizard tests
-with `cd client && npm test`, and create a production build with
+and `sessionStorage` only; use **Start over** to clear them. The home page and
+Browse schemes page load database records through the paginated API. Browse
+search and filters are reflected in the URL, and scheme cards/details only
+render official or source links on HTTPS `.gov.in` or `.nic.in` hosts. Run the
+client tests with `cd client && npm test`, and create a production build with
 `cd client && npm run build`.
 
 Run all server and client tests from the project root with `npm run test:all`.
@@ -204,6 +247,9 @@ Set `VITE_API_URL` to the Render API host, either with or without `/api`, for
 the production environment before triggering the build. The client adds one
 `/api` suffix, so it will call `/api/schemes`, `/api/schemes/:slug`, and
 `/api/match` without duplicating the prefix.
+The checked-in `client/.env.production` sets the public Scheme Saathi Render
+host as a non-secret production default. A Vercel `VITE_API_URL` environment
+variable overrides it when a different API host is required.
 The `client/vercel.json` rewrite supports direct refreshes on React Router
 routes. For Netlify, deploy `client/dist`; `client/public/_redirects` supplies
 the equivalent single-page-app fallback.

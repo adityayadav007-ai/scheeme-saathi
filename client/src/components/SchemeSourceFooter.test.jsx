@@ -6,12 +6,13 @@ import SchemeSourceFooter from "./SchemeSourceFooter.jsx";
 
 afterEach(cleanup);
 
-function renderFooter(verified) {
+function renderFooter(verified, dataSource = "seed") {
   return render(
     <I18nextProvider i18n={i18n}>
       <SchemeSourceFooter
         scheme={{
           verified,
+          dataSource,
           needsReview: !verified,
           officialLink: "https://example.gov.in/",
           sourceUrl: null,
@@ -38,5 +39,12 @@ describe("scheme verification status", () => {
 
     expect(screen.getByText("Unverified data")).toBeTruthy();
     expect(screen.queryByText("Verified")).toBeNull();
+  });
+
+  test("shows imported schemes as unverified by default", async () => {
+    await i18n.changeLanguage("en");
+    renderFooter(false, "import");
+
+    expect(screen.getByText("Unverified data")).toBeTruthy();
   });
 });

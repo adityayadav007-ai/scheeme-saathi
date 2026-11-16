@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 
-export default function LoadingSkeleton({ count = 3 }) {
+export default function LoadingSkeleton({ count = 3, grid = false }) {
   const { t } = useTranslation();
 
   return (
     <div
-      className="space-y-4"
+      className={grid ? "grid gap-4 sm:grid-cols-2 lg:grid-cols-3" : "space-y-4"}
       aria-label={t("accessibility.loadingSchemes")}
       aria-live="polite"
     >

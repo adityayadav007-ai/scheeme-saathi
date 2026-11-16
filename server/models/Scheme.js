@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const categories = [
+export const schemeCategories = [
   "Agriculture",
   "Health",
   "Education",
@@ -34,19 +34,20 @@ const schemeSchema = new mongoose.Schema({
   ministry: { type: String, default: "" },
   level: { type: String, enum: ["Central", "State"], default: "Central" },
   state: { type: String, default: "All" },
-  category: { type: String, enum: categories, default: "Other" },
+  category: { type: String, enum: schemeCategories, default: "Other" },
   description: { type: String, default: "" },
   benefits: { type: String, default: "" },
   eligibilityText: { type: String, default: "" },
   eligibility: { type: eligibilitySchema, default: () => ({}) },
   documents: { type: [String], default: [] },
+  keywords: { type: [String], default: [] },
   howToApply: { type: String, default: "" },
   officialLink: { type: String, required: true, trim: true },
   sourceUrl: { type: String, default: "" },
   note: { type: String, default: "" },
   dataSource: {
     type: String,
-    enum: ["seed", "datagov", "huggingface"],
+    enum: ["seed", "datagov", "huggingface", "import"],
     default: "seed"
   },
   sourceFields: {
