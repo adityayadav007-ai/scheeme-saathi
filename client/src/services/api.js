@@ -49,13 +49,15 @@ export async function getSchemes(params = {}) {
   };
 }
 
-export async function getScheme(slug) {
-  const response = await api.get(`/schemes/${encodeURIComponent(slug)}`);
+export async function getScheme(slug, lang = "en") {
+  const response = await api.get(`/schemes/${encodeURIComponent(slug)}`, {
+    params: { lang }
+  });
   return response?.data?.data ?? null;
 }
 
-export async function matchSchemes(answers) {
-  const response = await api.post("/match", answers);
+export async function matchSchemes(answers, lang = "en") {
+  const response = await api.post("/match", answers, { params: { lang } });
   const payload = response?.data;
   return {
     ...(payload && typeof payload === "object" ? payload : {}),

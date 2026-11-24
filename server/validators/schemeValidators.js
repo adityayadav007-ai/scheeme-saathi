@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { indianStates } from "../config/indianStates.js";
+import { supportedLanguages } from "../models/Scheme.js";
 
 const categories = [
   "Agriculture",
@@ -14,6 +15,7 @@ const categories = [
 ];
 
 const states = z.enum(indianStates);
+const language = z.enum(supportedLanguages).default("en");
 const optionalAnswer = (schema) => schema.nullable().optional();
 
 export const listSchemesQuerySchema = z.object({
@@ -21,8 +23,13 @@ export const listSchemesQuerySchema = z.object({
   category: z.enum(categories).optional(),
   state: states.optional(),
   level: z.enum(["Central", "State"]).optional(),
+  lang: language,
   page: z.coerce.number().int().min(1).max(1_000_000).default(1),
   limit: z.coerce.number().int().min(1).max(50).default(12)
+}).strict();
+
+export const schemeLanguageQuerySchema = z.object({
+  lang: language
 }).strict();
 
 export const schemeSlugParamsSchema = z.object({

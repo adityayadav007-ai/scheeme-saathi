@@ -4,6 +4,7 @@ import { validateRequest } from "../middleware/validateRequest.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {
   listSchemesQuerySchema,
+  schemeLanguageQuerySchema,
   schemeSlugParamsSchema
 } from "../validators/schemeValidators.js";
 
@@ -16,7 +17,10 @@ router.get(
 );
 router.get(
   "/:slug",
-  validateRequest({ params: schemeSlugParamsSchema }),
+  validateRequest({
+    params: schemeSlugParamsSchema,
+    query: schemeLanguageQuerySchema
+  }),
   asyncHandler(getScheme)
 );
 

@@ -63,8 +63,10 @@ describe("API service response defaults", () => {
   test("returns null for a missing scheme payload", async () => {
     client.get.mockResolvedValueOnce({ data: {} });
 
-    await expect(getScheme("scheme name")).resolves.toBeNull();
-    expect(client.get).toHaveBeenCalledWith("/schemes/scheme%20name");
+    await expect(getScheme("scheme name", "hi")).resolves.toBeNull();
+    expect(client.get).toHaveBeenCalledWith("/schemes/scheme%20name", {
+      params: { lang: "hi" }
+    });
   });
 
   test("returns safe match arrays when the payload is incomplete", async () => {

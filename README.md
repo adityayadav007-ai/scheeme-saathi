@@ -80,11 +80,20 @@ Run the local import with `MONGO_URI`:
 npm run import:schemes -- ./data/import/schemes.csv
 ```
 
-The CSV header must exactly match this order:
+The legacy CSV header is accepted in this order:
 
 ```text
 name,ministry,level,state,category,description,benefits,eligibilityText,minAge,maxAge,gender,category_eligible,occupation,maxIncome,area,requiresLand,requiresBPL,documents,howToApply,officialLink,sourceUrl,keywords
 ```
+
+For localized scheme content, include optional locale-suffixed columns such as
+`name_en`, `name_hi`, `description_en`, `description_hi`, `benefits_mr`, or
+`eligibility_bn` (`eligibilityText_bn` is also accepted). The importer accepts
+those fields in any header order
+alongside the required non-translatable columns. Supported suffixes are `en`,
+`hi`, `mr`, `bn`, `ta`, `te`, `gu`, `kn`, `ml`, `pa`, and `ur`. The English
+name is used for the scheme slug; `officialLink` is stored once and is never
+localized.
 
 Multi-value cells use semicolons. Each imported row must have a unique
 name-derived slug, a supported category and level, and an HTTPS official link
@@ -108,11 +117,15 @@ only the database host and name before connecting, never the connection URI.
 
 ## Scheme API
 
-- `GET /api/schemes?q=farmer&category=Agriculture&state=Maharashtra&level=Central&page=1&limit=12`
+- `GET /api/schemes?q=farmer&category=Agriculture&state=Maharashtra&level=Central&page=1&limit=12&lang=hi`
   returns matching schemes with pagination metadata. State-filtered results
   include both state-specific schemes and schemes available across India.
-- `GET /api/schemes/:slug` returns one scheme or a JSON 404 error.
-- `POST /api/match` accepts eligibility answers as JSON and returns
+  `lang` supports English, Hindi, Marathi, Bengali, Tamil, Telugu, Gujarati,
+  Kannada, Malayalam, Punjabi, and Urdu; missing scheme text falls back to
+  English.
+- `GET /api/schemes/:slug?lang=hi` returns one localized scheme or a JSON 404
+  error.
+- `POST /api/match?lang=hi` accepts eligibility answers as JSON and returns
   `{ "eligible": [], "partial": [] }`. Answers are validated in memory only
   and are not written to the database or logged.
 
@@ -163,9 +176,12 @@ client production build on pushes and pull requests.
 The server checks official links with `cd server && npm run check-links`.
 Checks are also scheduled weekly for Sunday at 3:00 AM India time. HTTP 403
 and 429 responses are treated as unknown; broken links are marked for review.
-The client has English and Hindi translations, remembers the language in
-`localStorage`, and keeps scheme names and descriptions in the source language
-returned by the API. Replace `YOUR_DOMAIN` in `client/public/robots.txt` and
+The client uses react-i18next for English, Hindi, Marathi, Bengali, Tamil,
+Telugu, Gujarati, Kannada, Malayalam, Punjabi, and Urdu. It remembers the
+selected language in `localStorage`, sets Urdu pages to right-to-left, and
+requests localized scheme fields from the API. Missing UI and scheme
+translations fall back to English. Replace `YOUR_DOMAIN` in
+`client/public/robots.txt` and
 `client/public/sitemap.xml` with the deployed site host before publishing.
 
 ## Phase 7: tests and production deployment
@@ -300,7 +316,8 @@ the production `MONGO_URI` available to the service.
   `"status":"ok"`.
 - Complete the full eligibility wizard and verify the results page and scheme
   detail pages load.
-- Switch to Hindi and refresh; verify translations and language persistence.
+- Switch between supported languages and refresh; verify translations,
+  language persistence, and right-to-left layout in Urdu.
 - Open official scheme links and check any link-under-review notices.
 - Test the site at mobile widths and refresh a direct `/scheme/:slug` URL.
 

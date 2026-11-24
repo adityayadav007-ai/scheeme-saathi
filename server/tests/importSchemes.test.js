@@ -153,6 +153,55 @@ describe("scheme CSV parsing", () => {
     ]);
   });
 
+  test("imports translated fields from locale-suffixed columns", () => {
+    const columns = [
+      ...schemeImportColumns,
+      "name_en",
+      "name_hi",
+      "description_en",
+      "description_hi",
+      "eligibility_en",
+      "eligibility_hi"
+    ];
+    const translatedRow = {
+      ...validValues,
+      name: "",
+      name_en: "Student Support Scheme",
+      name_hi: "छात्र सहायता योजना",
+      description_en: "Support for students",
+      description_hi: "विद्यार्थियों के लिए सहायता",
+      eligibility_en: "Applicants must be enrolled",
+      eligibility_hi: "आवेदक का नामांकन होना चाहिए"
+    };
+    const csv = [
+      columns.join(","),
+      columns
+        .map((column) => {
+          const value = translatedRow[column] ?? "";
+          return `"${String(value).replaceAll('"', '""')}"`;
+        })
+        .join(",")
+    ].join("\n");
+    const result = parseSchemeImportCsv(csv);
+
+    expect(result.validRows[0].scheme).toMatchObject({
+      name: "Student Support Scheme",
+      description: "Support for students",
+      translations: {
+        en: {
+          name: "Student Support Scheme",
+          description: "Support for students"
+        },
+        hi: {
+          name: "छात्र सहायता योजना",
+          description: "विद्यार्थियों के लिए सहायता",
+          eligibilityText: "आवेदक का नामांकन होना चाहिए"
+        }
+      },
+      officialLink: validValues.officialLink
+    });
+  });
+
   test("reports malformed CSV syntax with a row number instead of throwing", () => {
     const result = parseSchemeImportCsv(`${schemeImportColumns.join(",")}\n"unterminated`);
 

@@ -12,6 +12,31 @@ export const schemeCategories = [
   "Other"
 ];
 
+export const supportedLanguages = [
+  "en",
+  "hi",
+  "mr",
+  "bn",
+  "ta",
+  "te",
+  "gu",
+  "kn",
+  "ml",
+  "pa",
+  "ur"
+];
+
+const translationSchema = new mongoose.Schema(
+  {
+    name: { type: String, trim: true },
+    description: { type: String, default: "" },
+    benefits: { type: String, default: "" },
+    eligibilityText: { type: String, default: "" },
+    howToApply: { type: String, default: "" }
+  },
+  { _id: false }
+);
+
 const eligibilitySchema = new mongoose.Schema(
   {
     minAge: { type: Number, default: null },
@@ -42,6 +67,11 @@ const schemeSchema = new mongoose.Schema({
   documents: { type: [String], default: [] },
   keywords: { type: [String], default: [] },
   howToApply: { type: String, default: "" },
+  translations: {
+    type: Map,
+    of: translationSchema,
+    default: () => new Map()
+  },
   officialLink: { type: String, required: true, trim: true },
   sourceUrl: { type: String, default: "" },
   note: { type: String, default: "" },

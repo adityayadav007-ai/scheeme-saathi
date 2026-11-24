@@ -36,7 +36,7 @@ afterEach(() => {
 });
 
 describe("language toggle", () => {
-  test("switches the UI to Hindi, updates the document language, and persists the choice", async () => {
+  test("switches the UI to Hindi, updates document language and direction, and persists the choice", async () => {
     const user = userEvent.setup();
     render(
       <I18nextProvider i18n={i18n}>
@@ -45,12 +45,35 @@ describe("language toggle", () => {
       </I18nextProvider>
     );
 
-    await user.click(screen.getByRole("button", { name: "हिंदी" }));
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: "Choose language" }),
+      "hi"
+    );
 
     await waitFor(() => {
       expect(screen.getByText("होम")).toBeTruthy();
       expect(document.documentElement.lang).toBe("hi");
+      expect(document.documentElement.dir).toBe("ltr");
       expect(localStorage.getItem("scheme-saathi-language")).toBe("hi");
+    });
+  });
+
+  test("sets right-to-left direction when Urdu is selected", async () => {
+    const user = userEvent.setup();
+    render(
+      <I18nextProvider i18n={i18n}>
+        <LanguageToggle />
+      </I18nextProvider>
+    );
+
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: "Choose language" }),
+      "ur"
+    );
+
+    await waitFor(() => {
+      expect(document.documentElement.lang).toBe("ur");
+      expect(document.documentElement.dir).toBe("rtl");
     });
   });
 });

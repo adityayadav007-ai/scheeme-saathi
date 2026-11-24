@@ -138,6 +138,43 @@ describe("scheme API", () => {
     });
   });
 
+  test("returns scheme text in the requested language with English fallback", async () => {
+    vi.spyOn(Scheme, "find").mockReturnValue(
+      queryChain([
+        {
+          name: "English name",
+          description: "English description",
+          benefits: "English benefit",
+          eligibilityText: "English eligibility",
+          officialLink: "https://example.gov.in",
+          translations: {
+            hi: { name: "हिंदी नाम", description: "हिंदी विवरण" }
+          }
+        }
+      ])
+    );
+    vi.spyOn(Scheme, "countDocuments").mockResolvedValue(1);
+
+    const response = await request(app)
+      .get("/api/schemes")
+      .query({ lang: "hi" });
+
+    expect(response.status).toBe(200);
+    expect(response.body.data[0]).toMatchObject({
+      name: "हिंदी नाम",
+      description: "हिंदी विवरण",
+      benefits: "English benefit",
+      eligibilityText: "English eligibility",
+      officialLink: "https://example.gov.in"
+    });
+  });
+
+  test("rejects unsupported response languages", async () => {
+    const response = await request(app).get("/api/schemes?lang=fr");
+
+    expect(response.status).toBe(400);
+  });
+
   test("returns pagination metadata when no schemes are found", async () => {
     vi.spyOn(Scheme, "find").mockReturnValue(queryChain([]));
     vi.spyOn(Scheme, "countDocuments").mockResolvedValue(0);

@@ -1,5 +1,24 @@
 import { parse } from "csv-parse/sync";
-import { schemeCategories } from "../models/Scheme.js";
+import {
+  schemeCategories,
+  supportedLanguages
+} from "../models/Scheme.js";
+
+const translatableFields = [
+  "name",
+  "description",
+  "benefits",
+  "eligibilityText",
+  "howToApply"
+];
+const localizedCsvFields = {
+  name: "name",
+  description: "description",
+  benefits: "benefits",
+  eligibility: "eligibilityText",
+  eligibilityText: "eligibilityText",
+  howToApply: "howToApply"
+};
 
 export const schemeImportColumns = [
   "name",
@@ -25,6 +44,10 @@ export const schemeImportColumns = [
   "sourceUrl",
   "keywords"
 ];
+
+export const schemeTranslationColumns = Object.keys(localizedCsvFields).flatMap(
+  (field) => supportedLanguages.map((language) => `${field}_${language}`)
+);
 
 function makeSlug(name) {
   return name
@@ -60,8 +83,8 @@ function parseBoolean(value, field, errors) {
   return null;
 }
 
-function nullableText(value) {
-  const text = value.trim();
+function nullableText(value = "") {
+  const text = typeof value === "string" ? value.trim() : "";
   return text || null;
 }
 
@@ -83,9 +106,9 @@ function isValidOfficialLink(value) {
   }
 }
 
-function rowValues(record) {
+function rowValues(record, header) {
   return Object.fromEntries(
-    schemeImportColumns.map((column, index) => [
+    header.map((column, index) => [
       column,
       typeof record[index] === "string" ? record[index].trim() : ""
     ])
@@ -93,7 +116,7 @@ function rowValues(record) {
 }
 
 function convertRow(values, errors) {
-  const name = values.name;
+  const name = values.name_en || values.name;
   const slug = makeSlug(name);
   const minAge = parseNumber(values.minAge, "minAge", errors);
   const maxAge = parseNumber(values.maxAge, "maxAge", errors);
@@ -121,6 +144,27 @@ function convertRow(values, errors) {
     errors.push("maxIncome must be at least 0");
   }
 
+  const translations = {};
+  for (const language of supportedLanguages) {
+    const localizedFields = Object.fromEntries(
+      translatableFields
+        .map((field) => [
+          field,
+          nullableText(
+            values[
+              `${field === "eligibilityText" ? "eligibility" : field}_${language}`
+            ] ||
+              values[`${field}_${language}`] ||
+              ""
+          )
+        ])
+        .filter(([, value]) => value)
+    );
+    if (Object.keys(localizedFields).length > 0) {
+      translations[language] = localizedFields;
+    }
+  }
+
   return {
     errors,
     slug,
@@ -131,9 +175,14 @@ function convertRow(values, errors) {
       level: values.level,
       state: nullableText(values.state) || "All",
       category: values.category,
-      description: nullableText(values.description),
-      benefits: nullableText(values.benefits),
-      eligibilityText: nullableText(values.eligibilityText),
+      description:
+        nullableText(values.description_en) ||
+        nullableText(values.description),
+      benefits:
+        nullableText(values.benefits_en) || nullableText(values.benefits),
+      eligibilityText:
+        nullableText(values.eligibilityText_en) ||
+        nullableText(values.eligibilityText),
       eligibility: {
         minAge,
         maxAge,
@@ -148,7 +197,9 @@ function convertRow(values, errors) {
       },
       documents: parseArray(values.documents),
       keywords: parseArray(values.keywords),
-      howToApply: nullableText(values.howToApply),
+      howToApply:
+        nullableText(values.howToApply_en) || nullableText(values.howToApply),
+      ...(Object.keys(translations).length > 0 ? { translations } : {}),
       officialLink: values.officialLink,
       sourceUrl: nullableText(values.sourceUrl)
     }
@@ -190,9 +241,19 @@ export function parseSchemeImportCsv(content) {
   }
 
   const header = records[0];
+  const allowedColumns = new Set([
+    ...schemeImportColumns,
+    ...schemeTranslationColumns
+  ]);
+  const requiredColumns = schemeImportColumns.filter(
+    (column) => !translatableFields.includes(column)
+  );
+  const hasNameColumn = header.includes("name") || header.includes("name_en");
   if (
-    header.length !== schemeImportColumns.length ||
-    header.some((column, index) => column !== schemeImportColumns[index])
+    !hasNameColumn ||
+    requiredColumns.some((column) => !header.includes(column)) ||
+    header.some((column) => !allowedColumns.has(column)) ||
+    new Set(header).size !== header.length
   ) {
     return {
       rowsRead: Math.max(records.length - 1, 0),
@@ -217,14 +278,14 @@ export function parseSchemeImportCsv(content) {
   rows.forEach((record, index) => {
     const row = index + 2;
     const errors = [];
-    if (record.length !== schemeImportColumns.length) {
+    if (record.length !== header.length) {
       errors.push(
-        `expected ${schemeImportColumns.length} columns but found ${record.length}`
+        `expected ${header.length} columns but found ${record.length}`
       );
     }
 
-    const values = rowValues(record);
-    const name = values.name;
+    const values = rowValues(record, header);
+    const name = values.name_en || values.name;
     const slug = makeSlug(name);
     const firstRow = slug ? seenSlugs.get(slug) : undefined;
     if (slug && firstRow === undefined) seenSlugs.set(slug, row);
