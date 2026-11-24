@@ -12,7 +12,7 @@ if (!import.meta.env.PROD) {
 
 const api = axios.create({
   baseURL,
-  timeout: 12_000,
+  timeout: 45_000,
   headers: { "Content-Type": "application/json" }
 });
 

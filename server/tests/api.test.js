@@ -119,6 +119,23 @@ describe("scheme API", () => {
     expect(response.headers["access-control-allow-origin"]).toBe(origin);
   });
 
+  test("health reports whether MongoDB is connected", async () => {
+    const response = await request(app).get("/api/health");
+
+    expect(response.status).toBe(200);
+    expect(response.body.database).toBe("disconnected");
+  });
+
+  test("returns the total scheme count", async () => {
+    vi.spyOn(Scheme, "countDocuments").mockResolvedValue(55);
+
+    const response = await request(app).get("/api/schemes/count");
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ count: 55 });
+    expect(Scheme.countDocuments).toHaveBeenCalledWith({});
+  });
+
   test("lists schemes with pagination metadata and a state-aware filter", async () => {
     const scheme = { name: "Example", state: "All" };
     const find = vi.spyOn(Scheme, "find").mockReturnValue(queryChain([scheme]));
@@ -136,6 +153,30 @@ describe("scheme API", () => {
     expect(find).toHaveBeenCalledWith({
       state: { $in: ["Maharashtra", "All"] }
     });
+  });
+
+  test("logs safe filters and result counts for scheme-list requests", async () => {
+    vi.spyOn(Scheme, "find").mockReturnValue(queryChain([]));
+    vi.spyOn(Scheme, "countDocuments").mockResolvedValue(0);
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
+
+    const response = await request(app)
+      .get("/api/schemes")
+      .query({ category: "Business", state: "Maharashtra", q: "private query" });
+
+    expect(response.status).toBe(200);
+    expect(info).toHaveBeenCalledWith("Scheme list query completed", {
+      filters: {
+        hasSearch: true,
+        category: "Business",
+        state: "Maharashtra",
+        level: null,
+        lang: "en"
+      },
+      returned: 0,
+      total: 0
+    });
+    expect(info.mock.calls[0].join(" ")).not.toContain("private query");
   });
 
   test("returns scheme text in the requested language with English fallback", async () => {

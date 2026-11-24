@@ -73,6 +73,20 @@ describe("browse schemes response handling", () => {
     ).toBeTruthy();
   });
 
+  test("shows a clear loading message while schemes are loading", () => {
+    useSchemesMock.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      isFetching: true,
+      refetch: vi.fn()
+    });
+
+    renderBrowsePage();
+
+    expect(screen.getByText("Loading schemes")).toBeTruthy();
+  });
+
   test("shows the empty state when the response has no data array", () => {
     useSchemesMock.mockReturnValue(loadedQuery({}));
 

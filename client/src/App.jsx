@@ -17,7 +17,7 @@ const NotFoundPage = lazy(() => import("./pages/NotFoundPage.jsx"));
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
+      retry: 2,
       retryDelay: (attempt) => Math.min(1_000 * 2 ** attempt, 4_000),
       refetchOnWindowFocus: false
     },

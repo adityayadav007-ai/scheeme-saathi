@@ -117,6 +117,9 @@ only the database host and name before connecting, never the connection URI.
 
 ## Scheme API
 
+- `GET /api/health` reports API status and whether MongoDB is connected.
+- `GET /api/schemes/count` returns `{ "count": <number> }` for the current
+  number of scheme documents.
 - `GET /api/schemes?q=farmer&category=Agriculture&state=Maharashtra&level=Central&page=1&limit=12&lang=hi`
   returns matching schemes with pagination metadata. State-filtered results
   include both state-specific schemes and schemes available across India.
@@ -152,6 +155,7 @@ checks, keep the API running with `cd server && npm run dev`, then use:
 
 ```sh
 curl "http://localhost:5000/api/schemes?page=1&limit=12"
+curl "http://localhost:5000/api/schemes/count"
 curl "http://localhost:5000/api/schemes/pm-kisan"
 curl -X POST "http://localhost:5000/api/match" -H "Content-Type: application/json" -d "{\"age\":30,\"gender\":\"female\",\"state\":\"Maharashtra\",\"area\":\"Rural\",\"income\":100000,\"category\":\"OBC\",\"occupation\":\"farmer\",\"education\":\"graduate\",\"disability\":false,\"maritalStatus\":\"married\",\"ownsLand\":true,\"bpl\":false}"
 ```

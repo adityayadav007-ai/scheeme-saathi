@@ -61,6 +61,18 @@ export async function listSchemes(req, res) {
     Scheme.countDocuments(filter)
   ]);
 
+  console.info("Scheme list query completed", {
+    filters: {
+      hasSearch: Boolean(q),
+      category: category || null,
+      state: state || null,
+      level: level || null,
+      lang
+    },
+    returned: data.length,
+    total
+  });
+
   return res.json({
     data: data.map((scheme) => localizeScheme(scheme, lang)),
     pagination: {
@@ -70,6 +82,11 @@ export async function listSchemes(req, res) {
       totalPages: Math.ceil(total / limit)
     }
   });
+}
+
+export async function getSchemeCount(_req, res) {
+  const count = await Scheme.countDocuments({});
+  return res.json({ count });
 }
 
 export async function getScheme(req, res) {

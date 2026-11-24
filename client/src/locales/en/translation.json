@@ -507,7 +507,7 @@
     "goToPage": "Go to page {{page}}",
     "showing": "Showing {{count}} of {{total}} schemes",
     "emptyTitle": "No schemes found",
-    "emptyText": "Try another search or category, or use the eligibility wizard to explore options.",
+    "emptyText": "No schemes found. Try changing your search or filters, or check your eligibility.",
     "tryWizard": "Check eligibility",
     "myscheme": "Browse on myScheme.gov.in"
   },
@@ -560,7 +560,7 @@
   },
   "errors": {
     "generic": "Something went wrong while loading this information.",
-    "loadSchemes": "We couldn't load the schemes. Check your connection and retry.",
+    "loadSchemes": "Server error. We couldn't load schemes. Check your connection and try again.",
     "submit": "We couldn't check your answers. Please try again."
   },
   "notFound": {

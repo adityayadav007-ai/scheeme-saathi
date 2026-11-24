@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { getScheme, listSchemes } from "../controllers/schemeController.js";
+import {
+  getScheme,
+  getSchemeCount,
+  listSchemes
+} from "../controllers/schemeController.js";
 import { validateRequest } from "../middleware/validateRequest.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {
@@ -10,6 +14,7 @@ import {
 
 const router = Router();
 
+router.get("/count", asyncHandler(getSchemeCount));
 router.get(
   "/",
   validateRequest({ query: listSchemesQuerySchema }),
